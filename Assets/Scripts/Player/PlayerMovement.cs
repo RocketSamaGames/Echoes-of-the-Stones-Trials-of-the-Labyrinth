@@ -21,15 +21,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform sword;
     [SerializeField] private Animator swordAnim;
 
-    // Variables que se asignan desde Unity
     public CharacterController characterController;
-    public Transform groundCheck; // Para asignar el elemento que detecta el suelo.
-    public LayerMask groundLayer; // Para asignar qué elemento es el suelo.
-    public AudioSource steps; // Sonido de los pasos.
+    public Transform groundCheck; 
+    public LayerMask groundLayer; 
+    public AudioSource steps;
     public bool isDead;
 
-    [SerializeField] private float speed = 10f; // Velocidad de movimiento del player.
-    [SerializeField] private float sphereRadius = 0.3f; // Para la detección del suelo.
+    [SerializeField] private float speed = 10f; 
+    [SerializeField] private float sphereRadius = 0.3f; 
     [SerializeField] private float distanceDetection;
     [SerializeField] private float initialLife;
     [SerializeField] private Vector3 initialPosition;
@@ -80,7 +79,6 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // Determinamos cuándo el player está en el suelo.
         isGrounded = Physics.CheckSphere(groundCheck.position, sphereRadius, groundLayer);
 
         velocity.y = isGrounded && velocity.y < 0 ? -2f : velocity.y + gravity * Time.deltaTime;
@@ -106,50 +104,6 @@ public class PlayerMovement : MonoBehaviour
         DetectButtonPress();
         CheckCurrentLife();
         CheckScore();
-    }
-
-    public void SetFrozen(bool value)
-    {
-        isFrozen = value;
-
-        if (isFrozen)
-        {
-            velocity = Vector3.zero;
-            steps.Pause();
-        }
-    }
-
-    private void SwordAtack()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            swordAnim.SetTrigger("Swing");
-            SoundManager.Instance.PlaySwordHit();
-        }
-    }
-
-    private void DetectButtonPress()
-    {
-        Debug.DrawRay(transform.position, transform.forward * distanceDetection, Color.red);
-
-        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, distanceDetection))
-        {
-            if (hit.transform.TryGetComponent(out DoorButton doorButton))
-            {
-                bool isActivated = doorButton.IsAlreadyActivated();
-                pressText.enabled = !isActivated;
-
-                if (!isActivated && Input.GetKeyDown(KeyCode.E))
-                {
-                    doorButton.Interact(this);
-                    pressText.enabled = false;
-                }
-            }
-        }
-        else
-        {
-            pressText.enabled = false;
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -187,6 +141,63 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (canTakeDamage && hit.gameObject.CompareTag("DangerousTrap"))
+        {
+            ApplyPushBack(hit);
+            ApplyDamage(25);
+        }
+    }
+
+    // Método para impedir el movimiento del jugador.
+    public void SetFrozen(bool value)
+    {
+        isFrozen = value;
+
+        if (isFrozen)
+        {
+            velocity = Vector3.zero;
+            steps.Pause();
+        }
+    }
+
+    // Método para el ataque con la espada.
+    private void SwordAtack()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            swordAnim.SetTrigger("Swing");
+            SoundManager.Instance.PlaySwordHit();
+        }
+    }
+
+    // Método para detectar los botones que accionan las puertas.
+    private void DetectButtonPress()
+    {
+        Debug.DrawRay(transform.position, transform.forward * distanceDetection, Color.red);
+
+        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, distanceDetection))
+        {
+            if (hit.transform.TryGetComponent(out DoorButton doorButton))
+            {
+                bool isActivated = doorButton.IsAlreadyActivated();
+                pressText.enabled = !isActivated;
+
+                if (!isActivated && Input.GetKeyDown(KeyCode.E))
+                {
+                    doorButton.Interact(this);
+                    pressText.enabled = false;
+                }
+            }
+        }
+        else
+        {
+            pressText.enabled = false;
+        }
+    }
+
+    // Método para el comportamiento de cuando el jugador recoge una estrella.
     private void HandleStarPickup(Collider other)
     {
         score++;
@@ -194,6 +205,7 @@ public class PlayerMovement : MonoBehaviour
         canvas.CollectibleText.text = $"{score}/7";
     }
 
+    // Método para el comportamiento de cuando el jugador recoge un corazón.
     private void HandleHeartPickup(Collider other)
     {
         if (currentLife < 100)
@@ -204,6 +216,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Método para el funcionamiento de la trampa de suelo.
     private void HandleSpikeTrap()
     {
         SoundManager.Instance.PlaySpikeSound();
@@ -211,6 +224,7 @@ public class PlayerMovement : MonoBehaviour
         canvas.HealthBar.fillAmount = currentLife / initialLife;
     }
 
+    // Método para desactivar la colisión de los coleccionables y luego destruirlos.
     private void DisableAndDestroy(Collider other, Action playSound)
     {
         other.GetComponent<Collider>().enabled = false;
@@ -218,17 +232,7 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(CollectObject(other.gameObject));
     }
 
-    // Empujar al jugador al recibir daño con algunos objetos
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if (canTakeDamage && hit.gameObject.CompareTag("DangerousTrap"))
-        {
-            ApplyPushBack(hit);
-            ApplyDamage(25);
-        }
-    }
-
-    // Almacenar la posición a modo de checkpoint
+    // Método para almacenar la posición a modo de checkpoint.
     private void SaveCheckpointPosition()
     {
         Vector3 position = transform.position;
@@ -243,7 +247,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log($"Saved checkpoint position: {position.x}, {position.y}, {position.z}");
     }
 
-    // Aplicar daño
+    // Método para aplicar daño al jugador.
     public void ApplyDamage(float damage)
     {
         currentLife -= damage;
@@ -257,6 +261,7 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(DamageCooldown());
     }
 
+    // Método para empujar al jugador usando ControllerColliderHit.
     public void ApplyPushBack(ControllerColliderHit hit)
     {
         Vector3 direction = (transform.position - hit.collider.bounds.center).normalized;
@@ -264,6 +269,7 @@ public class PlayerMovement : MonoBehaviour
         pushDirection += direction * pushForce;
     }
 
+    // Método para empujar al jugador usando Collision.
     public void ApplyPushBack(Collision collision)
     {
         Vector3 direction = (transform.position - collision.collider.bounds.center).normalized;
@@ -271,7 +277,7 @@ public class PlayerMovement : MonoBehaviour
         pushDirection += direction * pushForce;
     }
 
-    // Comprobar la vida actual
+    // Método para comprobar la vida actual.
     private void CheckCurrentLife()
     {
         if (currentLife <= 0)
@@ -284,6 +290,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Método para comprobar la puntuación del jugador.
     private void CheckScore()
     {
         if (score == 7 && !starAchievementUnlocked)
@@ -292,6 +299,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Método para la muerte del jugador.
     private void HandlePlayerDeath()
     {
         Debug.Log("You're dead");
@@ -301,7 +309,7 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(RespawnOnCheckpoint());
     }
 
-    // Cargar el último checkpoint tocado
+    // Cargar el último checkpoint tocado.
     private void LoadCheckpointPosition()
     {
         Vector3 checkpointPosition = initialPosition;
@@ -330,7 +338,7 @@ public class PlayerMovement : MonoBehaviour
         canvas.HealthBar.fillAmount = currentLife / initialLife;
     }
 
-    // Rutina para los items
+    // Rutina para los items.
     private IEnumerator CollectObject(GameObject collectible)
     {
         Animator animator = collectible.GetComponent<Animator>();
@@ -342,6 +350,7 @@ public class PlayerMovement : MonoBehaviour
         Destroy(collectible);
     }
 
+    // Rutina para los logros.
     private IEnumerator WaitForAchievement()
     {
         if (!isAchievementPlaying)
@@ -361,14 +370,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Cooldown para esperar un tiempo y poder volver a recibir daño
+    // Cooldown para esperar un tiempo y poder volver a recibir daño.
     private IEnumerator DamageCooldown()
     {
         yield return new WaitForSeconds(damageCooldown);
         canTakeDamage = true;
     }
 
-    // Rutina para el respawn
+    // Rutina para el respawn.
     private IEnumerator RespawnOnCheckpoint()
     {
         Debug.Log("Checkpoint position: " + PlayerPrefs.GetFloat("CheckpointPositionX") + ", " + PlayerPrefs.GetFloat("CheckpointPositionY") + ", " + PlayerPrefs.GetFloat("CheckpointPositionZ"));
@@ -385,6 +394,7 @@ public class PlayerMovement : MonoBehaviour
         isDead = false;
     }
 
+    // Rutina para mostrar el panel cuando el jugador es herido.
     private IEnumerator ShowHitPanel()
     {
         canvasHitPanel.gameObject.SetActive(true);
@@ -395,6 +405,7 @@ public class PlayerMovement : MonoBehaviour
         canvasHitPanel.gameObject.SetActive(false);
     }
 
+    // Rutina para mostrar el panel y reproducir el sonido de cuando al jugador le queda poca vida.
     private IEnumerator ShowLowHealthPanel()
     {
         isLowHealthPanelPlaying = true;
@@ -414,6 +425,7 @@ public class PlayerMovement : MonoBehaviour
         SoundManager.Instance.StopLowHealthSound();
     }
 
+    // Rutina para mostrar el panel de Fade Out.
     private IEnumerator FadeOutWall(GameObject wall)
     {
         Renderer wallRenderer = wall.GetComponent<Renderer>();

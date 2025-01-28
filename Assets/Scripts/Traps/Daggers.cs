@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script que contiene el comportamiento de las dagas escondidas en las paredes.
 public class Daggers : MonoBehaviour
 {
     [SerializeField] private GameManagerSO gM;

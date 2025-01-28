@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script que contiene el comportamiento de la trampa de suelo.
 public class FloorTrapBehaviour : MonoBehaviour
 {
     [SerializeField] private AudioSource audioSource;

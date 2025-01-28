@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Script que contiene las propiedades del texto de la puntuación y de la barra de vida.
 public class CanvasManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text collectibleText;

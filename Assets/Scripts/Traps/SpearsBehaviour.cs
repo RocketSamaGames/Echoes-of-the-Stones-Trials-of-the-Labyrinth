@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// Script que contiene el comportamiento de movimiento de la trampa de lanzas.
 public class SpearsBehaviour : MonoBehaviour
 {
     [SerializeField] private float waitingTimeGoingUp;

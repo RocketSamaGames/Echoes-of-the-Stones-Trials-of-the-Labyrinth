@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
 
+// Script que contiene el comportamiento de las puertas.
 public class DoorBehaviour : MonoBehaviour
 {
     [SerializeField] private GameManagerSO gM;

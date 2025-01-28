@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script vinculado a un objeto que siempre está en escena. Contiene los métodos que reproducen los sonidos y estos son llamados desde los otros scripts.
 public class SoundManager : MonoBehaviour
 {
     public AudioSource starSound;

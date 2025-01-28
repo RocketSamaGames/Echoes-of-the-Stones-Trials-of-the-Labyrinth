@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script que contiene el comportamiento de los checpoints para cambiar de color cuando el jugador pasa por su BoxCollider y reproducir su sonido.
 public class CheckpointBehaviour : MonoBehaviour
 {
     [SerializeField] private Material yellowMaterial;

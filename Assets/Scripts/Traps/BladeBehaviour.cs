@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script que contiene el comportamiento de la cuchilla que se balancea.
 public class BladeBehaviour : MonoBehaviour
 {
     [SerializeField] private Transform blade;

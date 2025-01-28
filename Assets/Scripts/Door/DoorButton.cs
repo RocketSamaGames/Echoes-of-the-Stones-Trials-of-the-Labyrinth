@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script que contiene el comportamiento de los botones que accionan las puertas.
 public class DoorButton : MonoBehaviour
 {
     [SerializeField] private GameManagerSO gM;
@@ -65,17 +66,6 @@ public class DoorButton : MonoBehaviour
     {
         return alreadyActivated;
     }
-
-    //private IEnumerator SwitchCamera()
-    //{
-    //    mainCamera.gameObject.SetActive(false);
-    //    secondaryCamera.gameObject.SetActive(true);
-
-    //    yield return new WaitForSeconds(lookDuration);
-
-    //    mainCamera.gameObject.SetActive(true);
-    //    secondaryCamera.gameObject.SetActive(false);
-    //}
 
     private IEnumerator PlayingSounds(PlayerMovement player)
     {

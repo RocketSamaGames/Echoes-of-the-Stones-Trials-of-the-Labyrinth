@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Script que contiene el comportamiento de las paredes que desaparecen cuando el jugador atraviesa su BoxCollider.
 public class WallFadeOut : MonoBehaviour
 {
     [SerializeField] private AudioSource wallAudio;

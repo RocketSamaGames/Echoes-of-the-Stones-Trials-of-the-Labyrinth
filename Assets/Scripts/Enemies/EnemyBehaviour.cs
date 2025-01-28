@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
+// Script que contiene el comportamiento de los enemigos, así como sus animaciones, sonidos y rutinas.
 public class EnemyBehaviour : MonoBehaviour
 {
     [SerializeField] private float initialLife;
